@@ -1,0 +1,22 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <title>Simple Blog</title>
+</head>
+<body>
+    <h1>Maqolalar</h1><hr style="color: crimson;">
+    {% for post in posts %}
+    <img src="{{ post.image.url }}" alt="post-image">
+    <h3>{{ post.title }}</h3>
+    <pre>Muallif: {{ post.author }}</pre>
+    <div class="post-content">
+        <p>{{ post.content|safe }}</p>
+    </div>
+    
+    {% endfor %}
+</body>
+</html>
