@@ -23,7 +23,7 @@ class PostsListView(View):
     def get(self, request):
         posts = Post.objects.all()
         context = {
-            'latest_post': get_latest_post(),
+            'categories': get_categories(),
             'today': get_today(),
             'posts': posts
         }
@@ -33,7 +33,7 @@ class PostsListView(View):
         query = request.GET.get('query')
         posts = Post.objects.filter(title_icontains=query) if query else Post.objects.all()
         context = {
-            'latest_post': get_latest_post(),
+            'categories': get_categories(),
             'today': get_today(),
             'posts': posts
         }
