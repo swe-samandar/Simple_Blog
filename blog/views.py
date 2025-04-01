@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.views import View
 from .models import Category,Post, Comment
 from datetime import datetime
+from django.db.models import Q
 
 def get_today():
     return datetime.date(datetime.today())
@@ -83,3 +84,13 @@ class DetailView(View):
             
 
         return render(request, 'blog/detail.html', context)
+    
+class SearchView(View):
+    def get(self, request):
+        query = request.GET.get('query', '')
+        results = Post.objects.filter(
+    Q(title__icontains=query) |  
+    Q(content__icontains=query)  
+)
+        
+        return render(request, 'search.html', {'query': query, 'results': results})

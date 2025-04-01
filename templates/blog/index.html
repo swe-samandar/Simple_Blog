@@ -86,16 +86,19 @@
             <!-- Search form -->
             <div class="row tm-row">
                 <div class="col-12">
-                    <form method="POST" class="form-inline tm-mb-80 tm-search-form">                
-                        <input class="form-control tm-search-input" name="query" type="text" placeholder="Search..." aria-label="Search">
+                    <form method="GET" action="{% url 'blog:search' %}" class="form-inline tm-mb-80 tm-search-form">                
+                        <input class="form-control tm-search-input" name="query" type="text" id="search" placeholder="Search..." aria-label="Search" value="{{ query }}">
                         <button class="tm-search-button" type="submit">
                             <i class="fas fa-search tm-search-icon" aria-hidden="true"></i>
                         </button>                                
                     </form>
+                    
+                    
                 </div>                
-            </div>            
+            </div>             
             <div class="row tm-row">
                 {% for post in posts %}
+                <!-- {{ post }} -->
                 <article class="col-12 col-md-6 tm-post">
                     <hr class="tm-hr-primary">
                     <a href="{% url 'blog:detail' post.id %}" class="effect-lily tm-post-link tm-pt-60">
