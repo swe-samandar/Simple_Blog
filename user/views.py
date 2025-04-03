@@ -50,7 +50,7 @@ class UserLogin(LoginView):
 
 def logout_view(request):
     logout(request)
-    return redirect('login')
+    return redirect('blog:index')
 
 # def profile_view(request):
 #     profile = get_object_or_404(Profile, user=request.user)
@@ -72,3 +72,25 @@ def profile_view(request):
         form = ProfileUpdateForm(instance=profile, user=request.user)
 
     return render(request, 'registration/profile.html', {'form': form, 'profile': profile})
+
+
+from blog.models import Message
+from .forms import MessageForm
+from django.http import JsonResponse
+
+def send_message(request):
+
+    if request.method == 'POST':
+        form = MessageForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            # messages.success('Xabar muvaffaqiyatli yuborildi!')
+            return JsonResponse({'message': "Xabar muvaffaqiyatli yuborildi!"})
+
+        else: JsonResponse({'error': "Nimadir xato boldi"}, status=400)
+    else:
+        form = MessageForm()
+
+    return render(request, 'blog/contact.html', {'form': form})
+

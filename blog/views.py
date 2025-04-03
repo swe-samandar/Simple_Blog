@@ -150,19 +150,26 @@ class DetailView(View):
     def get(self, request, pk):
         print(get_latest_post())
         post_ = Post.objects.get(pk=pk)
+
+        related_posts = Post.objects.filter(categories__in=post_.categories.all()).exclude(id=post_.id).distinct()
+
+        post_.views += 1
+        post_.save()
         context = {
             'post_': post_,
             'latest_post': get_latest_post(),
-            'related_posts': get_related_post(),
+            'related_posts': related_posts,
             'categories': get_categories(),
             'today': get_today()
         }
+
         return render(request, 'blog/detail.html', context)
     
     def post(self, request, pk):
         query = request.GET.get('query')
         posts = Post.objects.filter(title_icontains=query) if query else Post.objects.all()
         post_ = Post.objects.get(pk=pk)
+
         context = {
             'post_': post_,
             'posts': posts,

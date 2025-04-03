@@ -35,3 +35,17 @@ class ProfileUpdateForm(forms.ModelForm):
         if commit:
             profile.save()
         return profile
+
+
+from blog.models import Message
+
+class MessageForm(forms.ModelForm):
+    class Meta:
+        model = Message
+        fields = ['name', 'email', 'message']
+
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Name*'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email*'}),
+            'message': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Message*', 'rows': 5}),
+        }

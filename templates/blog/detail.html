@@ -1,6 +1,14 @@
 {% extends 'blog/base.html' %}
 {% block main %}
+
+
             <div class="row tm-row">
+                <div class="post_commentbox">
+    <a href="#" class="views"><i class="fa fa-eye"></i>{{ post_.views }}</a>
+    <span class="created_at"><i class="fa fa-calendar"></i>{{ post_.created_at.date }}</span>
+
+</div>
+
                 <div class="col-12">
                     {% if post_.image %}
                     {% load static %}
@@ -67,24 +75,29 @@
                     </div>
                 </div>
                 <aside class="col-lg-4 tm-aside-col">
-                    <div class="tm-post-sidebar">
-                        <hr class="mb-3 tm-hr-primary">
-                        <h2 class="mb-4 tm-post-title tm-color-primary">Categories</h2>
-                        <ul class="tm-mb-75 pl-5 tm-category-list">
-                            {% for ctg in categories %}
-                            <li><a href="#" class="tm-color-primary">{{ ctg.name }}</a></li>
-                            {% endfor %}
-                        </ul>
-                        <hr class="mb-3 tm-hr-primary">
-                        <h2 class="tm-mb-40 tm-post-title tm-color-primary">Related Posts</h2>
-                        <a href="#" class="d-block tm-mb-40">
-                            <figure>
-                                <img src="img/img-02.jpg" alt="Image" class="mb-3 img-fluid">
-                                <figcaption class="tm-color-primary">Duis mollis diam nec ex viverra scelerisque a sit</figcaption>
-                            </figure>
-                        </a>
-                    </div>                    
-                </aside>
+    <div class="tm-post-sidebar">
+        <hr class="mb-3 tm-hr-primary">
+        <h2 class="mb-4 tm-post-title tm-color-primary">Categories</h2>
+        <ul class="tm-mb-75 pl-5 tm-category-list">
+            {% for ctg in categories %}
+            <li><a href="#" class="tm-color-primary">{{ ctg.name }}</a></li>
+            {% endfor %}
+        </ul>
+
+        <hr class="mb-3 tm-hr-primary">
+        <h2 class="tm-mb-40 tm-post-title tm-color-primary">Related Posts</h2>
+
+        {% for post in related_posts %}
+        <a href="{{ post.get_absolute_url }}" class="d-block tm-mb-40">
+            <figure>
+                <img src="#" alt="{{ post.title }}" class="mb-3 img-fluid">
+                <figcaption class="tm-color-primary">{{ post.title }}</figcaption>
+            </figure>
+        </a>
+        {% endfor %}
+    </div>
+</aside>
+
             </div>
 
             <!-- Ushbu JavaScript kod sahifa yangilanmasdan, AJAX yordamida izoh qo‘shadi va yangi izohni sahifaga qo‘shadi. -->

@@ -15,32 +15,35 @@
             <h2 class="tm-color-primary tm-post-title tm-mb-60">Contact Us</h2>
         </div>
         <div class="col-lg-7 tm-contact-left">
-            <form method="POST" action="" class="mb-5 ml-auto mr-0 tm-contact-form">                        
-                <div class="form-group row mb-4">
-                    <label for="name" class="col-sm-3 col-form-label text-right tm-color-primary">Name</label>
-                    <div class="col-sm-9">
-                        <input class="form-control mr-0 ml-auto" name="name" id="name" type="text" required>                            
-                    </div>
-                </div>
-                <div class="form-group row mb-4">
-                    <label for="email" class="col-sm-3 col-form-label text-right tm-color-primary">Email</label>
-                    <div class="col-sm-9">
-                        <input class="form-control mr-0 ml-auto" name="email" id="email" type="email" required>
-                    </div>
-                </div>
-                <div class="form-group row mb-5">
-                    <label for="message" class="col-sm-3 col-form-label text-right tm-color-primary">Message</label>
-                    <div class="col-sm-9">
-                        <textarea class="form-control mr-0 ml-auto" name="message" id="message" rows="8" required></textarea>                                
-                    </div>
-                </div>
-                <div class="form-group row text-right">
-                    <div class="col-12">
-                        <button class="tm-btn tm-btn-primary tm-btn-small">Submit</button>                        
-                    </div>                            
-                </div>                                
-            </form>
+    <form id="messageForm" method="POST" action="{% url 'message' %}" class="mb-5 ml-auto mr-0 tm-contact-form">
+        {% csrf_token %}
+        <div class="form-group row mb-4">
+            <label for="name" class="col-sm-3 col-form-label text-right tm-color-primary">Name</label>
+            <div class="col-sm-9">
+                <input class="form-control mr-0 ml-auto" name="name" id="name" type="text" required>
+            </div>
         </div>
+        <div class="form-group row mb-4">
+            <label for="email" class="col-sm-3 col-form-label text-right tm-color-primary">Email</label>
+            <div class="col-sm-9">
+                <input class="form-control mr-0 ml-auto" name="email" id="email" type="email" required>
+            </div>
+        </div>
+        <div class="form-group row mb-5">
+            <label for="message" class="col-sm-3 col-form-label text-right tm-color-primary">Message</label>
+            <div class="col-sm-9">
+                <textarea class="form-control mr-0 ml-auto" name="message" id="message" rows="8" required></textarea>
+            </div>
+        </div>
+        <div class="form-group row text-right">
+            <div class="col-12">
+                <button type="submit" class="tm-btn tm-btn-primary tm-btn-small">Submit</button>
+            </div>
+        </div>
+    </form>
+    <div id="responseMessage" class="text-center mt-3"></div>
+</div>
+
         <div class="col-lg-5 tm-contact-right">
             <address class="mb-4 tm-color-gray">
                 120 Lorem ipsum dolor sit amet,
@@ -83,5 +86,34 @@
                 </li>
             </ul>
         </div>
-    </div> 
+    </div>
+
+<script>
+document.getElementById('messageForm').addEventListener('submit', function(event) {
+    event.preventDefault();  // Prevent default form submission
+
+    let formData = new FormData(this);
+
+    fetch("{% url 'message' %}", {
+        method: "POST",
+        body: formData,
+        headers: {
+            "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        let responseDiv = document.getElementById("responseMessage");
+        if (data.message) {
+            responseDiv.innerHTML = `<p style="color: green;">${data.message}</p>`;
+            document.getElementById('messageForm').reset();  // Clear form after success
+        } else {
+            responseDiv.innerHTML = `<p style="color: red;">${data.error}</p>`;
+        }
+    })
+    .catch(error => console.error("Error:", error));
+});
+</script>
+
+
 {% endblock %}  
