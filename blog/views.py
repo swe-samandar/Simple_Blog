@@ -1,14 +1,13 @@
 from django.shortcuts import render,  redirect, get_object_or_404
 from django.views import View
-from .models import Category, Post, Comment, Message
+from .models import Category, Post, Comment
 from datetime import datetime
 from django.db.models import Q
 from django.core.paginator import Paginator
-from .forms import PostCreateForm, CommentCreateForm
+from .forms import PostCreateForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import authentication, permissions
+from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 
 def get_today():
@@ -110,15 +109,15 @@ class DeletePostView(UserPassesTestMixin, LoginRequiredMixin, View):
         return redirect('blog:index')
     
 
-
 class CommentCreateView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
-        message = request.POST.get('message')
+        message = request.POST.get('message', '').strip()
+        post_id = request.POST.get('post_id')
 
-        if not message.strip():
+        if not message:
             return JsonResponse({'error': "Izoh bo'sh bo'lmasligi kerak!"}, status=400)
 
-        post = get_object_or_404(Post, id=request.post)
+        post = get_object_or_404(Post, id=post_id)
 
         comment = Comment.objects.create(
             post=post,
@@ -135,6 +134,29 @@ class CommentCreateView(LoginRequiredMixin, View):
             }
         })
 
+
+class CategoryPostView(View):
+    def get(self, request, pk):
+        ctg = get_object_or_404(Category, id=pk)
+        posts = Post.objects.filter(categories=ctg)
+        return render(request, 'blog/category_post.html', {'posts': posts})
+
+
+class LikePostView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        post = get_object_or_404(Post, id=pk)
+
+        if request.user in post.likes.all():
+            post.likes.remove(request.user) 
+            liked = False
+        else:
+            post.likes.add(request.user)
+            liked = True
+
+        return JsonResponse({
+            "status": "liked" if liked else "unliked",
+            "like_count": post.likes.count()
+        })
 
 class AboutView(View):
     def get(self, request):

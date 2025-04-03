@@ -25,13 +25,17 @@
                                     {{ ctg.name }}
                                 {% endfor %}
                             </span>
+                            <button id="like-btn" data-post-id="{{ post_.id }}" class="tm-btn tm-btn-primary like-btn">
+                                <i class="fas fa-thumbs-up"></i> 
+                                <span id="like-count">{{ post.likes.count }}</span>
+                            </button>
                         </div>
                         
                         <!-- Comments -->
                         <div>
                             <h2 class="tm-color-primary tm-post-title">Comments</h2>
                             <hr class="tm-hr-primary tm-mb-45">
-                            <form id="commentForm" method="POST" action="{% url 'blog:comment' %}" class="mb-5 tm-comment-form">
+                            <form id="commentForm" method="POST" action="{% url 'blog:post_comment' %}" class="mb-5 tm-comment-form">
                                 {% csrf_token %}
                                 <h2 class="tm-color-primary tm-post-title mb-4">Your comment</h2>
                                 <div class="mb-4">
@@ -56,7 +60,7 @@
                                         <div>
                                             <p>{{ comment.content|safe }}</p>
                                             <div class="d-flex justify-content-between">
-                                                <a href="#" class="tm-color-primary">REPLY</a>
+                                                <a href="#" class="tm-color-primary">REPLY </a>
                                                 <span class="tm-color-primary">{{ comment.created_at.date }}</span>
                                             </div>                                                 
                                         </div>                                
@@ -72,7 +76,7 @@
                         <h2 class="mb-4 tm-post-title tm-color-primary">Categories</h2>
                         <ul class="tm-mb-75 pl-5 tm-category-list">
                             {% for ctg in categories %}
-                            <li><a href="#" class="tm-color-primary">{{ ctg.name }}</a></li>
+                            <li><a href="{% url 'blog:category_posts' ctg.pk %}" class="tm-color-primary">{{ ctg.name }}</a></li>
                             {% endfor %}
                         </ul>
                         <hr class="mb-3 tm-hr-primary">
@@ -102,7 +106,7 @@
                             return;
                         }
             
-                        fetch("{% url 'blog:comment' %}", {
+                        fetch("{% url 'blog:post_comment' %}", {
                             method: "POST",
                             headers: {
                                 "Content-Type": "application/x-www-form-urlencoded",
@@ -143,6 +147,33 @@
                             }
                         })
                         .catch(error => console.error("Xatolik:", error));
+                    });
+                });
+            </script>
+
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    document.getElementById("like-btn").addEventListener("click", function () {
+                        let postId = this.dataset.postId;
+                        let likeCountSpan = document.getElementById("like-count");
+
+                        fetch(`/like-post/${postId}/`, {
+                            method: "POST",
+                            headers: {
+                                "X-CSRFToken": "{{ csrf_token }}",  // CSRF token yuborish
+                                "Content-Type": "application/json"
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.status === "liked") {
+                                alert("You liked this post!");
+                            } else {
+                                alert("Like removed!");
+                            }
+                            likeCountSpan.textContent = data.like_count; // Like sonini yangilash
+                        })
+                        .catch(error => console.error("Error:", error));
                     });
                 });
             </script>

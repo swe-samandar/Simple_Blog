@@ -23,7 +23,7 @@ class Post(models.Model):
     content = RichTextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(blank=True, null=True)
-    likes = models.ManyToManyField(User, related_name='liked_posts')
+    likes = models.ManyToManyField(User, related_name='liked_posts', blank=True)
     views = models.PositiveBigIntegerField(default=0)
     image = models.ImageField(upload_to='post_images/', blank=True, null=True)
 
@@ -40,8 +40,6 @@ class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField()
-    likes = models.ManyToManyField(User, related_name='liked_comments')
-    views = models.PositiveBigIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(blank=True, null=True)
 

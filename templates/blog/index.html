@@ -23,7 +23,7 @@
                     <div class="d-flex justify-content-between tm-pt-45">
                         <span class="tm-color-primary">
                             {% for ctg in post.categories.all %}
-                                {{ ctg.name }}  
+                                <a href="{% url 'blog:category_posts' ctg.pk %}">{{ ctg.name }}</a>  
                             {% endfor %}
                         </span>
                         <span class="tm-color-primary">{{ today }}</span>

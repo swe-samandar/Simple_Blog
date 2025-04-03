@@ -1,5 +1,6 @@
 {% extends 'blog/base.html' %}
 {% block main %}
+{% load static %}
     <div class="row tm-row tm-mb-40">
         <div class="col-12">                    
             <div class="mb-4">
@@ -64,7 +65,7 @@
         </div>                
         <div class="col-lg-6 tm-mb-60 tm-person-col">
             <div class="media tm-person">
-                <img src="img/about-02.jpg" alt="Image" class="img-fluid mr-4">
+                <img src="{% static 'img/about-02.jpg' %}" alt="Image" class="img-fluid mr-4">
                 <div class="media-body">
                     <h2 class="tm-color-primary tm-post-title mb-2">John Henry</h2>
                     <h3 class="tm-h3 mb-3">CEO/Founder</h3>
@@ -77,7 +78,7 @@
         </div>
         <div class="col-lg-6 tm-mb-60 tm-person-col">
             <div class="media tm-person">
-                <img src="img/about-03.jpg" alt="Image" class="img-fluid mr-4">
+                <img src="{% static 'img/about-03.jpg' %}" alt="Image" class="img-fluid mr-4">
                 <div class="media-body">
                     <h2 class="tm-color-primary tm-post-title mb-2">Timy Cake</h2>
                     <h3 class="tm-h3 mb-3">Project Director</h3>
@@ -90,7 +91,7 @@
         </div>
         <div class="col-lg-6 tm-mb-60 tm-person-col">
             <div class="media tm-person">
-                <img src="img/about-04.jpg" alt="Image" class="img-fluid mr-4">
+                <img src="{% static 'img/about-04.jpg' %}" alt="Image" class="img-fluid mr-4">
                 <div class="media-body">
                     <h2 class="tm-color-primary tm-post-title mb-2">Jay Zoona</h2>
                     <h3 class="tm-h3 mb-3">Supervisor</h3>
@@ -103,7 +104,7 @@
         </div>
         <div class="col-lg-6 tm-mb-60 tm-person-col">
             <div class="media tm-person">
-                <img src="img/about-05.jpg" alt="Image" class="img-fluid mr-4">
+                <img src="{% static 'img/about-05.jpg' %}" alt="Image" class="img-fluid mr-4">
                 <div class="media-body">
                     <h2 class="tm-color-primary tm-post-title mb-2">Catherine Soft</h2>
                     <h3 class="tm-h3 mb-3">Team Leader</h3>
