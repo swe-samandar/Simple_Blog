@@ -19,7 +19,7 @@ class Post(models.Model):
     title = models.CharField(max_length=300)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     categories = models.ManyToManyField(Category, related_name='posts')
-    short_desc = RichTextField()
+    short_desc = models.CharField(max_length=300)
     content = RichTextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(blank=True, null=True)
@@ -52,3 +52,19 @@ class Comment(models.Model):
 
     def __str__(self):
         return f'Comment by {self.author.username} on {self.post.title}'
+
+
+class Message(models.Model):
+    name = models.CharField(max_length=200)
+    email = models.EmailField()
+    message = models.CharField(max_length=300)
+    is_read = models.BooleanField(default=False)
+    sended_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-sended_at']
+        verbose_name = 'message'
+        verbose_name_plural = 'messages'
+
+    def __str__(self):
+        return f"{self.message[:15]} from {self.name}"

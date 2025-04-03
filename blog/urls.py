@@ -5,6 +5,9 @@ from .views import (
     ContactViev,
     DetailView,
     SearchView,
+    CreatePostView,
+    UpdatePostView,
+    DeletePostView,
     ) 
 
 app_name = 'blog'
@@ -15,4 +18,7 @@ urlpatterns = [
     path('contact/', ContactViev.as_view(), name='contact'),
     path('detail/<int:pk>/', DetailView.as_view(), name='detail'),
     path('search/', SearchView.as_view(), name='search'),
+    path('post/new/', CreatePostView.as_view(), name='post_create'),
+    path('post/<int:pk>/edit', UpdatePostView.as_view(), name='post_update'),
+    path('post/<int:pk>/delete/', DeletePostView.as_view(), name='post_delete'),
 ]
