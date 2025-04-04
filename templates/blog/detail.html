@@ -22,7 +22,7 @@
                             </div>
                             <span class="d-block text-right tm-color-primary">
                                 {%  for ctg in post_.categories.all %}
-                                    {{ ctg.name }}
+                                <a href="{% url 'blog:category_posts' ctg.pk %}" class="tm-color-primary">{{ ctg.name }}</a>
                                 {% endfor %}
                             </span>
                             <button id="like-btn" data-post-id="{{ post_.id }}" class="tm-btn tm-btn-primary like-btn">

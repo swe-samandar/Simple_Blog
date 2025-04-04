@@ -1,15 +1,41 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Update your Post</title>
-</head>
-<body>
-    <form method="POST" action="" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Yangilash</button>    
-    </form>
-</body>
-</html>
+{% extends 'blog/base.html' %}
+
+{% block title %} Postni Yangilash {% endblock %}
+
+{% block main %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg rounded">
+                <div class="card-header bg-warning text-white text-center">
+                    <h3>Postni Tahrirlash</h3>
+                </div>
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        {% for field in form %}
+                        {{ form.media }}
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">{{ field.label_tag }}</label>
+                                {{ field }}
+                                {% if field.help_text %}
+                                    <div class="form-text text-muted">{{ field.help_text }}</div>
+                                {% endif %}
+                                {% for error in field.errors %}
+                                    <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
+
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary px-4 py-2">Yangilash</button>
+                            <a href="{% url 'blog:index' %}" class="btn btn-secondary px-4 py-2">Bekor qilish</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

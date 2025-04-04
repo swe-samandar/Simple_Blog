@@ -1,15 +1,41 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create New Post</title>
-</head>
-<body>
-    <form method="POST" action="" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Qo'shish</button>    
-    </form>
-</body>
-</html>
+{% extends 'blog/base.html' %}
+
+{% block title %} Yangi Post Qo'shish {% endblock %}
+
+{% block main %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg rounded">
+                <div class="card-header bg-success text-white text-center">
+                    <h3>Yangi Post Qo'shish</h3>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{% url 'blog:post_create' %}" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ form.media }}
+                        {% for field in form %}
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.help_text %}
+                                <small class="form-text text-muted">{{ field.help_text }}</small>
+                            {% endif %}
+                            {% for error in field.errors %}
+                                <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        {% endfor %}
+                        
+                        <!-- Submit va Bekor qilish tugmalari -->
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary px-4 py-2">Qo'shish</button>
+                            <a href="{% url 'blog:index' %}" class="btn btn-secondary px-4 py-2">Bekor qilish</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
