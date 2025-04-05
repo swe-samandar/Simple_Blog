@@ -114,11 +114,12 @@ class DeletePostView(UserPassesTestMixin, LoginRequiredMixin, View):
 class CommentCreateView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         message = request.POST.get('message')
+        post_id = request.POST.get('post_id')
 
         if not message.strip():
             return JsonResponse({'error': "Izoh bo'sh bo'lmasligi kerak!"}, status=400)
 
-        post = get_object_or_404(Post, id=request.post)
+        post = get_object_or_404(Post, id=post_id)
 
         comment = Comment.objects.create(
             post=post,
@@ -160,7 +161,8 @@ class DetailView(View):
             'latest_post': get_latest_post(),
             'related_posts': related_posts,
             'categories': get_categories(),
-            'today': get_today()
+            'today': get_today(),
+            'comments': post_.comments.all()
         }
 
         return render(request, 'blog/detail.html', context)
@@ -177,12 +179,13 @@ class DetailView(View):
             'today': get_today(),
             'related_posts': get_related_post(),
             'categories': get_categories(),
+
         }
 
-        content = request.GET.get('message')
-        if content:
-            comment = Comment.objects.create(content=content)
-            comment.save()
+        # content = request.GET.get('message')
+        # if content:
+        #     comment = Comment.objects.create(content=content)
+        #     comment.save()
             
 
         return render(request, 'blog/detail.html', context)

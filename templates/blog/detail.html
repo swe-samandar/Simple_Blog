@@ -64,13 +64,13 @@
                                         <div>
                                             <p>{{ comment.content|safe }}</p>
                                             <div class="d-flex justify-content-between">
-                                                <a href="#" class="tm-color-primary">REPLY</a>
+<!--                                                <a href="#" class="tm-color-primary">REPLY</a>-->
                                                 <span class="tm-color-primary">{{ comment.created_at.date }}</span>
-                                            </div>                                                 
-                                        </div>                                
+                                            </div>
+                                        </div>
                                     </div>
                                 {% endfor %}
-                            </div>                         
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -102,61 +102,74 @@
 
             <!-- Ushbu JavaScript kod sahifa yangilanmasdan, AJAX yordamida izoh qo‘shadi va yangi izohni sahifaga qo‘shadi. -->
             <script>
-                document.addEventListener("DOMContentLoaded", function () {
-                    document.getElementById("commentForm").addEventListener("submit", function (event) {
-                        event.preventDefault();
-            
-                        let message = document.getElementById("commentMessage").value.trim();
-                        let postId = document.getElementById("postId").value;
-                        let csrfToken = document.querySelector("[name=csrfmiddlewaretoken]").value;
-            
-                        if (!message) {
-                            alert("Izoh bo'sh bo'lmasligi kerak!");
-                            return;
-                        }
-            
-                        fetch("{% url 'blog:comment' %}", {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/x-www-form-urlencoded",
-                                "X-CSRFToken": csrfToken
-                            },
-                            body: new URLSearchParams({
-                                "message": message,
-                                "post_id": postId
-                            })
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.error) {
-                                alert(data.error);
-                            } else {
-                                let commentsContainer = document.getElementById("commentsContainer");
-            
-                                let newComment = `
-                                    <div class="tm-comment tm-mb-45">
-                                        <figure class="tm-comment-figure">
-                                            <img src="{% static 'img/comment-1.jpg' %}" alt="Image" class="mb-2 rounded-circle img-thumbnail">
-                                            <figcaption class="tm-color-primary text-center">
-                                                ${data.comment.author}
-                                            </figcaption>
-                                        </figure>
-                                        <div>
-                                            <p>${data.comment.content}</p>
-                                            <div class="d-flex justify-content-between">
-                                                <a href="#" class="tm-color-primary">REPLY</a>
-                                                <span class="tm-color-primary">${data.comment.created_at}</span>
-                                            </div>                                                 
-                                        </div>                                
-                                    </div>
-                                `;
-            
-                                commentsContainer.innerHTML = newComment + commentsContainer.innerHTML;
-                                document.getElementById("commentMessage").value = ""; // Formani tozalash
-                            }
-                        })
-                        .catch(error => console.error("Xatolik:", error));
-                    });
-                });
-            </script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("commentForm").addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        // Get form values
+        let message = document.getElementById("commentMessage").value.trim();
+        let postId = document.getElementById("postId").value;
+        let csrfToken = document.querySelector("[name=csrfmiddlewaretoken]").value;
+
+        // Validate message
+        if (!message) {
+            alert("Izoh bo'sh bo'lmasligi kerak!");
+            return;
+        }
+
+        // Send AJAX request
+        fetch("{% url 'blog:comment' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "X-CSRFToken": csrfToken
+            },
+            body: new URLSearchParams({
+                "message": message,
+                "post_id": postId
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Server responded with status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.error) {
+                alert(data.error);
+            } else {
+                let commentsContainer = document.getElementById("commentsContainer");
+
+                // Create new comment HTML
+                let newComment = `
+                    <div class="tm-comment tm-mb-45">
+                        <figure class="tm-comment-figure">
+                            <img src="/static/img/comment-1.jpg" alt="Image" class="mb-2 rounded-circle img-thumbnail">
+                            <figcaption class="tm-color-primary text-center">
+                                ${data.comment.author}
+                            </figcaption>
+                        </figure>
+                        <div>
+                            <p>${data.comment.content}</p>
+                            <div class="d-flex justify-content-between">
+                                <a href="#" class="tm-color-primary">REPLY</a>
+                                <span class="tm-color-primary">${data.comment.created_at}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // Add new comment to the top and clear the form
+                commentsContainer.innerHTML = newComment + commentsContainer.innerHTML;
+                document.getElementById("commentMessage").value = "";
+            }
+        })
+        .catch(error => {
+            console.error("Xatolik:", error);
+            alert("Something went wrong while submitting your comment. Please try again.");
+        });
+    });
+});
+</script>
 {% endblock %}
